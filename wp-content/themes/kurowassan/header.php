@@ -36,7 +36,6 @@
 		<div class="container">
 			<div class="row header-inner">
 				
-				<!-- Todo: make icon + name site -->
 				<div class="col-lg-3">
 					<div class="site-icon">
 						<a href="<?php echo home_url(); ?>">
@@ -48,7 +47,6 @@
 					</div>
 				</div>
 
-				<!-- Todo: create menu nav -->
 				<div class="col-lg-7">
 					<?php
 					wp_nav_menu(array(
@@ -63,10 +61,16 @@
 					?>
 				</div>
 
-				<!-- Todo: create shopping cart icon -->
 				<div class="col-lg-2">
 					<div class="shopping-cart">
-
+						<a href="<?php echo wc_get_cart_url(); ?>" class="cart-icon">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M6 6H21L20 14H7L6 6Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								<circle cx="9" cy="20" r="1" fill="currentColor"/>
+								<circle cx="17" cy="20" r="1" fill="currentColor"/>
+							</svg>
+							<span class="cart-count"><?php echo WC()->cart->get_cart_contents_count(); ?></span>
+						</a>
 					</div>
 				</div>
 

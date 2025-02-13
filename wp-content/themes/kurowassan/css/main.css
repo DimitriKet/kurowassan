@@ -19,7 +19,7 @@ h1, h2, h3, h4, h5, h6, span, p {
 }
 
 span, p {
-	font-size: 18px;
+	font-size: 20px;
 	line-height: 25px;
 	margin: 0 0 15px 0;
 }
@@ -178,6 +178,67 @@ ol {
 .product-img img {
     width: 100%;
     height: auto;
+}
+
+.product-ctrl {
+    display: inline-flex;
+    gap: 20px;
+}
+
+/*---------------------
+  Button
+-----------------------*/
+
+.qty-control {
+    display: inline-flex;
+    border: 0.7px solid #000;
+}
+
+.qty-btn {
+    background: #ffffff;
+    width: 40px;
+    font-size: 20px;
+    color: #000;
+    border: none;
+    cursor: pointer;
+    padding: 15px 10px;
+    transition: all 0.5s ease;
+}
+
+.qty-btn:hover {
+    background: #F0E68C;
+    transition: all 0.5s ease;
+}
+
+#product-qty {
+    width: 5em;
+    text-align: center;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    margin: 0;
+    font-size: 20px;
+    border-right: 0.7px solid #000;
+    border-left: 0.7px solid #000;
+}
+
+#product-qty:focus {
+    outline: none;
+}
+
+.add-to-cart-btn {
+    font-size: 20px;
+    border: 0.7px solid #F0E68C;
+    background: #F0E68C;
+    color: #ffffff;
+    transition: all 0.5s ease;
+}
+
+.add-to-cart-btn:hover {
+    transition: all 0.5s ease;
+    border: 0.7px solid #000000;
+    background: #ffffff;
+    color: #000;
 }
 
 /*---------------------
