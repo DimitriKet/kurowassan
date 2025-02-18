@@ -30,6 +30,9 @@
 </head>
 
 <body <?php body_class(); ?>>
+<div id="preloader">
+	<div class="loader"></div>
+</div>
 <?php wp_body_open(); ?>
 <div id="page" class="site">
 	<header id="header">

@@ -35,4 +35,23 @@
             autoPlay: true,
         });
     });
+    /*------------------
+        Preloader
+    --------------------*/
+    $(window).on('load', function () {
+        $(".loader").fadeOut();
+        $("#preloader").delay(200).fadeOut("slow");
+
+        /*------------------
+            FIlter
+        --------------------*/
+        // $('.filter__controls li').on('click', function () {
+        //     $('.filter__controls li').removeClass('active');
+        //     $(this).addClass('active');
+        // });
+        // if ($('.filter__gallery').length > 0) {
+        //     var containerEl = document.querySelector('.filter__gallery');
+        //     var mixer = mixitup(containerEl);
+        // }
+    });
 })(jQuery);
