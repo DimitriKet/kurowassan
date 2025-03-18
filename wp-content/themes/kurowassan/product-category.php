@@ -9,8 +9,7 @@ if (!defined('ABSPATH')) {
 
 get_header(); ?>
 
-<main>
-    <?php echo get_template_part( 'template-parts/template', 'breadcrumb' ) ; ?>  
+<div id="product-category">
     <section id="product-category">
         <?php
             $current_category = get_queried_object(); 
@@ -53,7 +52,7 @@ get_header(); ?>
         <?php wp_reset_postdata(); ?>  
     </section>
          
-</main>
+</div>
 
 <?php 
 get_footer();

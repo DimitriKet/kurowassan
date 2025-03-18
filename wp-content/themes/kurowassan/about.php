@@ -6,10 +6,9 @@
 get_header();
 ?>
 
-<main>
-    <?php echo get_template_part( 'template-parts/template', 'breadcrumb' ) ; ?>  
+<div id="about">
     <?php echo get_template_part( 'template-parts/template', 'about' ) ; ?>  
-</main>
+</div>
 
 <?php
 get_footer();

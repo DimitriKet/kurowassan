@@ -6,8 +6,7 @@
 get_header();
 ?>
 
-<main>
-    <?php echo get_template_part( 'template-parts/template', 'breadcrumb' ) ; ?>  
+<div id="menu">
     <section id="menu">
         <?php
             $categories = get_terms(array(
@@ -47,7 +46,7 @@ get_header();
     </section>
 
 
-</main>
+</div>
 
 <?php
 get_footer();

@@ -333,3 +333,76 @@ function custom_enqueue_ajax_script() {
         'ajax_url' => admin_url('admin-ajax.php')
     ]);
 }
+
+/**
+ * Custom Breadcrumb Function
+ */
+function kurowassan_breadcrumb() {
+    // Home page
+    $home_text = __('Home', 'kurowassan');
+    $home_link = home_url('/');
+    $breadcrumb = '<div class="breadcrumb-container"><div class="container">';
+    $breadcrumb .= '<div class="page-title-wrapper"><h1 class="text-dark font-secondary">' . get_the_title() . '</h1></div>';
+    $breadcrumb .= '<div class="breadcrumb">';
+    $breadcrumb .= '<a href="' . esc_url($home_link) . '"><span>' . esc_html($home_text) . '</span></a>';
+
+    // Don't display breadcrumbs on home page
+    if (!is_front_page()) {
+        $breadcrumb .= '<span class="separator">/</span>';
+
+        if (is_category() || is_single()) {
+            if (is_single()) {
+                // If it's a post, show its category and then the post title
+                $categories = get_the_category();
+                if ($categories) {
+                    $category = $categories[0];
+                    $breadcrumb .= '<a href="' . esc_url(get_category_link($category->term_id)) . '">' . esc_html($category->name) . '</a>';
+                    $breadcrumb .= '<span class="separator">/</span>';
+                }
+                $breadcrumb .= '<span class="current">' . get_the_title() . '</span>';
+            } else {
+                // If it's a category archive
+                $breadcrumb .= '<span class="current">' . single_cat_title('', false) . '</span>';
+            }
+        } elseif (is_page()) {
+            // If it's a page
+            $breadcrumb .= '<span class="current">' . get_the_title() . '</span>';
+        } elseif (is_search()) {
+            // Search results page
+            $breadcrumb .= '<span class="current">' . sprintf(__('Search Results for: %s', 'kurowassan'), get_search_query()) . '</span>';
+        } elseif (is_404()) {
+            // 404 page
+            $breadcrumb .= '<span class="current">' . __('404 Not Found', 'kurowassan') . '</span>';
+        } elseif (is_archive()) {
+            if (is_post_type_archive('product') || is_tax('product_cat')) {
+                // WooCommerce Shop page
+                if (is_shop()) {
+                    $breadcrumb .= '<span class="current">' . __('Shop', 'kurowassan') . '</span>';
+                } else {
+                    $breadcrumb .= '<a href="' . esc_url(get_permalink(wc_get_page_id('shop'))) . '">' . __('Shop', 'kurowassan') . '</a>';
+                    $breadcrumb .= '<span class="separator">/</span>';
+                    
+                    if (is_tax('product_cat')) {
+                        $current_term = get_queried_object();
+                        if ($current_term->parent) {
+                            $parent_terms = get_term_parents_list($current_term->term_id, 'product_cat', array(
+                                'separator' => '<span class="separator">/</span>',
+                                'link' => true,
+                                'format' => 'name'
+                            ));
+                            $breadcrumb .= $parent_terms;
+                        } else {
+                            $breadcrumb .= '<span class="current">' . $current_term->name . '</span>';
+                        }
+                    }
+                }
+            } else {
+                $breadcrumb .= '<span class="current">' . get_the_archive_title() . '</span>';
+            }
+        }
+    }
+
+    $breadcrumb .= '</div></div></div>';
+    
+    echo $breadcrumb;
+}
