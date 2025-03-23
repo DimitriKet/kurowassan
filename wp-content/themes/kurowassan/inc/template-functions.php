@@ -27,6 +27,67 @@ function kurowassan_body_classes( $classes ) {
 add_filter( 'body_class', 'kurowassan_body_classes' );
 
 /**
+ * Add page-specific background color classes to different pages
+ *
+ * @param array $classes Classes for the body element.
+ * @return array
+ */
+function kurowassan_page_background_classes( $classes ) {
+    // Home page - light butterscotch background
+    if ( is_front_page() ) {
+        $classes[] = 'bg-butterscotch';
+    }
+    
+    // About page
+    if ( is_page('about') ) {
+        $classes[] = 'bg-light';
+    }
+    
+    // Menu page
+    if ( is_page('menu') ) {
+        $classes[] = 'bg-butterscotch';
+    }
+    
+    // Recipe page
+    if ( is_page('recipe') || is_singular('recipe') ) {
+        $classes[] = 'bg-light';
+    }
+    
+    // Contact page
+    if ( is_page('contact') ) {
+        $classes[] = 'bg-light';
+    }
+    
+    // Blog/News pages
+    if ( is_home() || is_category() || is_tag() || is_author() || is_date() ) {
+        $classes[] = 'bg-butterscotch';
+    }
+    
+    // Single post
+    if ( is_singular('post') ) {
+        $classes[] = 'bg-light';
+    }
+    
+    // WooCommerce pages
+    if ( class_exists( 'WooCommerce' ) ) {
+        if ( is_shop() || is_product_category() ) {
+            $classes[] = 'bg-butterscotch';
+        }
+        
+        if ( is_product() ) {
+            $classes[] = 'bg-light';
+        }
+        
+        if ( is_cart() || is_checkout() ) {
+            $classes[] = 'bg-light';
+        }
+    }
+    
+    return $classes;
+}
+add_filter( 'body_class', 'kurowassan_page_background_classes' );
+
+/**
  * Add a pingback url auto-discovery header for single posts, pages, or attachments.
  */
 function kurowassan_pingback_header() {

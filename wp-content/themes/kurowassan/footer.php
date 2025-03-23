@@ -11,69 +11,128 @@
 
 ?>
 	<style>
-
+        .footer-top {
+            padding: 80px 0 40px;
+        }
+        .footer-bottom {
+            padding: 20px 0;
+            background-color: rgba(0,0,0,0.1);
+        }
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: var(--secondary) !important;
+            transition: all 0.3s ease;
+        }
+        .social-icons a:hover {
+            background-color: #fff;
+            transform: translateY(-3px);
+        }
+        .footer-link {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            padding: 4px 0;
+            transition: all 0.3s ease;
+        }
+        .footer-link:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+        .footer-heading {
+            position: relative;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .footer-heading:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--primary);
+        }
+        .footer-logo img {
+            max-width: 150px;
+            margin-bottom: 15px;
+        }
+        .footer-contact p {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .footer-contact i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        .copyright {
+            text-align: center;
+            margin: 0;
+            font-size: 14px;
+        }
 	</style>
 
-
-	<footer id="colophon" class="site-footer">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-4 col-md-6 footer-logo">
-                    <div class="d-flex flex-column align-items-center justify-content-center text-center h-100 bg-secondary border-inner p-4">
-                        <a href="#" class="navbar-brand">
-                            <h2 class="m-0 text-uppercase text-white">Croissant for u </h2>
-                        </a>
-                        <p class="mt-3">Lorem diam sit erat dolor elitr et, diam lorem justo labore amet clita labore stet eos magna sit. Elitr dolor eirmod duo tempor lorem, elitr clita ipsum sea. Nonumy rebum et takimata ea takimata amet gubergren, erat rebum magna lorem stet eos. Diam amet et kasd eos duo dolore no.</p>
-                    </div>
-                </div>
-				
-                <div class="col-lg-8 col-md-6">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-12 pt-5 mb-5">
-                            <h4 class="text-dark text-uppercase mb-4">Get In Touch</h4>
-                            <div class="d-flex mb-2">
-                                <p class="mb-0">123 Street, New York, USA</p>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <p class="mb-0">info@example.com</p>
-                            </div>
-                            <div class="d-flex mb-2">
-                                <p class="mb-0">+012 345 67890</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-12 pt-0 pt-lg-5 mb-5">
-                            <h4 class="text-dark text-uppercase mb-4">Quick Links</h4>
-                            <div class="d-flex flex-column justify-content-start">
-                                <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Home</a>
-                                <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>About Us</a>
-                                <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Our Services</a>
-                                <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Meet The Team</a>
-                                <a class="text-secondary mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Latest Blog</a>
-                                <a class="text-secondary" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Contact Us</a>
+	<footer id="colophon" class="site-footer bg-secondary text-white">
+		<div class="footer-top">
+            <div class="container">
+                <div class="row g-5">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-about">
+                            <h4 class="text-white footer-heading">Croissant for u</h4>
+                            <p>We provide the finest artisanal baked goods and pastries made with high-quality ingredients and traditional techniques. Taste the difference in every bite!</p>
+                            <div class="social-icons">
+                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                <a href="#"><i class="fab fa-pinterest-p"></i></a>
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="col-lg-4 col-md-6">
+                        <h4 class="text-white footer-heading">Quick Links</h4>
+                        <div class="d-flex flex-column">
+                            <a class="footer-link" href="<?php echo home_url(); ?>">Home</a>
+                            <a class="footer-link" href="<?php echo get_permalink(get_page_by_path('about')); ?>">About Us</a>
+                            <a class="footer-link" href="<?php echo get_permalink(get_page_by_path('menu')); ?>">Our Menu</a>
+                            <a class="footer-link" href="<?php echo get_permalink(get_page_by_path('recipe')); ?>">Recipes</a>
+                            <a class="footer-link" href="<?php echo get_permalink(get_page_by_path('contact')); ?>">Contact Us</a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4 col-md-6">
+                        <h4 class="text-white footer-heading">Contact Us</h4>
+                        <div class="footer-contact">
+                            <p><i class="fas fa-map-marker-alt"></i> Street 59 Ward 14 Go Vap District Ho Chi Minh City</p>
+                            <p><i class="fas fa-phone-alt"></i> +1 234 567 8900</p>
+                            <p><i class="fas fa-envelope"></i> info@croissantforu.com</p>
+                            <p><i class="fas fa-clock"></i> Mon-Sat: 7AM - 7PM | Sunday: 8AM - 5PM</p>
+                        </div>
+                    </div>
                 </div>
-			</div>
-		</div>
-
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="container">
+                <p class="copyright">
+                    &copy; <?php echo date('Y'); ?> Croissant For U. All Rights Reserved. 
+                    <span class="small">Designed with <i class="fas fa-heart text-primary"></i> by Kurowassan</span>
+                </p>
+            </div>
+        </div>
 	</footer><!-- #colophon -->
-	
-	<footer>
-		<div class="site-info">
-			<a href="<?php echo esc_url( __( 'https://wordpress.org/', 'kurowassan' ) ); ?>">
-				<?php
-				/* translators: %s: CMS name, i.e. WordPress. */
-				printf( esc_html__( 'Proudly powered by %s', 'kurowassan' ), 'WordPress' );
-				?>
-			</a>
-			<span class="sep"> | </span>
-				<?php
-				/* translators: 1: Theme name, 2: Theme author. */
-				printf( esc_html__( 'Theme: %1$s by %2$s.', 'kurowassan' ), 'kurowassan', '<a href="http://underscores.me/">Underscores.me</a>' );
-				?>
-		</div><!-- .site-info -->
-	</footer>
 </div><!-- #page -->
 
 <?php wp_footer(); ?>

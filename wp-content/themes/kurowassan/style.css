@@ -967,3 +967,47 @@ textarea {
 	margin-right: auto;
 	margin-bottom: 1.5em;
 }
+
+/* Background Colors */
+.bg-butterscotch {
+    background-color: #FFF8DC !important;
+}
+
+.bg-light {
+    background-color: #F8F9FA !important;
+}
+
+.bg-primary {
+    background-color: var(--primary) !important;
+    color: #fff !important;
+}
+
+.bg-secondary {
+    background-color: var(--secondary) !important;
+    color: #fff !important;
+}
+
+.bg-white {
+    background-color: #fff !important;
+}
+
+/* Ensure content area has proper padding on different backgrounds */
+body.bg-butterscotch .site-main,
+body.bg-light .site-main {
+    padding: 40px 0;
+}
+
+body.bg-butterscotch #primary,
+body.bg-light #primary {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+/* Fix for WooCommerce pages */
+body.woocommerce.bg-butterscotch,
+body.woocommerce.bg-light {
+    background-color: inherit;
+}
