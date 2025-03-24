@@ -78,13 +78,12 @@
 					?>
 				</div>
 				<div class="col-lg-2">
-					<div class="cart-icon">
-						<a href="<?php echo wc_get_cart_url(); ?>">
+					<div class="cart-icon-wrapper">
+						<a href="<?php echo wc_get_cart_url(); ?>" class="cart-icon">
 							<i class="fas fa-shopping-cart"></i>
-							<?php if(WC()->cart->get_cart_contents_count() > 0): ?>
-								<span class="cart-count"><?php echo WC()->cart->get_cart_contents_count(); ?></span>
-							<?php endif; ?>
+							<span class="cart-count"><?php echo WC()->cart->get_cart_contents_count(); ?></span>
 						</a>
+						<?php get_template_part('template-parts/header/mini-cart'); ?>
 					</div>
 				</div>
 			</div>
