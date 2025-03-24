@@ -197,6 +197,12 @@ function add_menu_link_class( $atts, $item, $args ) {
 	if($args->link_class) {
 		$atts['class'] = $args->link_class;
 	}
+	
+	// Add active class to current page menu item
+	if(in_array('current-menu-item', $item->classes)) {
+		$atts['class'] .= ' active';
+	}
+	
 	return $atts;
 }
 add_filter( 'nav_menu_link_attributes', 'add_menu_link_class', 1, 3 );

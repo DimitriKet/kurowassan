@@ -50,14 +50,14 @@ get_header();
     <!-- Banner Section -->
     <?php get_template_part('template-parts/content','banner'); ?>
     
-    <!-- About Section (Cockroach Brown) -->
+    <!-- About Section -->
     <section class="bg-cockroach">
         <?php get_template_part('template-parts/template','about'); ?>
     </section>
     
     <div class="section-divider"></div>
     
-    <!-- Menu Section (Butter Yellow) -->
+    <!-- Menu Section -->
     <section id="home-menu" class="py-5 bg-butterscotch">
         <div class="container">
             <div class="section-title position-relative text-center mx-auto mb-5 pb-3" style="max-width: 600px;">
@@ -155,6 +155,73 @@ get_header();
             
             <div class="text-center mt-4">
                 <a href="<?php echo get_permalink(get_page_by_path('recipe')); ?>" class="btn btn-primary">View All Recipes</a>
+            </div>
+        </div>
+    </section>
+    
+    <div class="section-divider"></div>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-5 bg-butterscotch">
+        <div class="container">
+            <div class="section-title position-relative text-center mx-auto mb-5 pb-3" style="max-width: 600px;">
+                <h2 class="text-dark font-secondary">Testimonials</h2>
+                <h1 class="display-4 text-uppercase">What Our Customers Say</h1>
+            </div>
+            
+            <div class="testimonials-wrapper">
+                <div class="row">
+                    <!-- Testimonial Item 1 -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                <p>"The croissants here are absolutely amazing! Perfectly flaky and buttery. It's like being in a Parisian bakery."</p>
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <img src="<?php echo get_template_directory_uri(); ?>/img/testimonial-1.jpg" alt="Customer 1">
+                                </div>
+                                <div class="author-info">
+                                    <h4>Sarah Johnson</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonial Item 2 -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                <p>"Their bread selection is outstanding. Everything is freshly baked and the staff is always friendly and helpful."</p>
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <img src="<?php echo get_template_directory_uri(); ?>/img/testimonial-2.jpg" alt="Customer 2">
+                                </div>
+                                <div class="author-info">
+                                    <h4>Michael Chen</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonial Item 3 -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                <p>"I love their pastries! The attention to detail and quality ingredients really shows in every bite. A must-visit bakery!"</p>
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <img src="<?php echo get_template_directory_uri(); ?>/img/testimonial-3.jpg" alt="Customer 3">
+                                </div>
+                                <div class="author-info">
+                                    <h4>Emma Davis</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
