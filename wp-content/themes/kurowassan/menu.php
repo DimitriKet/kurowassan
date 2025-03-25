@@ -4,6 +4,9 @@
 */
 
 get_header();
+
+// Get current page number from URL
+$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
 ?>
 
 <div id="menu">
@@ -24,7 +27,7 @@ get_header();
             <?php             
                 if(!empty($categories)):
                     foreach($categories as $category):
-                        $permalink = get_category_link($category->term_id);
+                        $permalink = get_term_link($category->term_id);
                         $thumbnail_id = get_term_meta($category->term_id, 'thumbnail_id', true);
                         $image_url = wp_get_attachment_url($thumbnail_id);
                         $image_alt = get_post_meta($thumbnail_id, '_wp_attachment_image_alt', true);
@@ -42,10 +45,9 @@ get_header();
             </div>
 
             <!-- Products Section -->
-            <div class="products-section">
+            <div class="products-section" id="menu-products">
                 <h3 class="section-title">Our Products</h3>
                 <?php
-                $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
                 $args = array(
                     'post_type' => 'product',
                     'posts_per_page' => 20,
@@ -53,7 +55,7 @@ get_header();
                 );
                 $products_query = new WP_Query($args);
                 ?>
-                <div class="products-grid">
+                <div class="products-grid" data-current-page="<?php echo $paged; ?>" data-ajax-container="true">
                     <?php
                     if($products_query->have_posts()):
                         while ($products_query->have_posts()) : $products_query->the_post();
@@ -75,32 +77,36 @@ get_header();
                         </div>
                     <?php 
                         endwhile;
-                    ?>
-                    <div class="pagination-wrapper">
-                        <?php
-                        echo paginate_links(array(
-                            'base' => str_replace(999999999, '%#%', esc_url(get_pagenum_link(999999999))),
-                            'format' => '?paged=%#%',
-                            'current' => max(1, get_query_var('paged')),
-                            'total' => $products_query->max_num_pages,
-                            'prev_text' => '&laquo; Previous',
-                            'next_text' => 'Next &raquo;',
-                            'type' => 'list',
-                            'end_size' => 3,
-                            'mid_size' => 3
-                        ));
-                        ?>
-                    </div>
-                    <?php
                     else:
                         echo '<div class="no-products-message">';
                         echo '<p>No products found. Please check back later.</p>';
                         echo '</div>';
                     endif;
-                    wp_reset_postdata();
                     ?>
                 </div>
             </div>
+
+            <?php if($products_query->max_num_pages > 1): ?>
+            <div class="pagination-wrapper">
+                <?php
+                $big = 999999999;
+                echo paginate_links(array(
+                    'base' => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
+                    'format' => '?paged=%#%',
+                    'current' => max(1, $paged),
+                    'total' => $products_query->max_num_pages,
+                    'prev_text' => '&laquo; Previous',
+                    'next_text' => 'Next &raquo;',
+                    'type' => 'list',
+                    'end_size' => 3,
+                    'mid_size' => 3
+                ));
+                ?>
+            </div>
+            <?php endif; 
+
+            wp_reset_postdata();
+            ?>
         </div>
     </section>
 </div>

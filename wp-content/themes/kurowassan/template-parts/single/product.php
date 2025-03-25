@@ -18,18 +18,21 @@
                     </div>
                     <div class="col-12 col-md-4">
                         <h2><?php the_title(); ?></h2>
-                        <p><?php echo $price; ?> đ</p>
+                        <p class="price"><?php echo $price; ?> đ</p>
                         
                         <div class="product-ctrl">
-                            <div class="qty-control">
-                                <button type="button" class="qty-btn minus">-</button>
-                                <input type="text" id="product-qty" value="1" min="1" max="10">
-                                <button type="button" class="qty-btn plus">+</button>
+                            <div class="qty-wrapper">
+                                <label for="product-qty">Quantity:</label>
+                                <div class="qty-control">
+                                    <button type="button" class="qty-btn minus">-</button>
+                                    <input type="text" id="product-qty" value="1" min="1" max="10">
+                                    <button type="button" class="qty-btn plus">+</button>
+                                </div>
                             </div>
 
-                            <button type="button" class="add-to-cart-btn" data-product-id="<?php echo $product_id ?>">Add to Cart</button>
-
-                            <span class="cart-status"></span> 
+                            <div class="cart-wrapper">
+                                <button type="button" class="add-to-cart-btn" data-product-id="<?php echo $product_id ?>">Add to Cart</button>
+                            </div>
                         </div>
                     </div>
 

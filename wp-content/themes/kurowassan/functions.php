@@ -147,8 +147,21 @@ function kurowassan_scripts() {
 
 	wp_enqueue_script( 'kurowassan-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true );
 
-	wp_enqueue_script( 'js-main', get_template_directory_uri() . '/js/main.js', array(), _S_VERSION, true );
-	wp_enqueue_script( 'js-owlcarousel', get_template_directory_uri() . '/lib/owlcarousel/owl.carousel.min.js', array(), _S_VERSION, true );
+	wp_enqueue_script( 'js-main', get_template_directory_uri() . '/js/main.js', array('jquery'), _S_VERSION, true );
+	wp_enqueue_script( 'js-owlcarousel', get_template_directory_uri() . '/lib/owlcarousel/owl.carousel.min.js', array('jquery'), _S_VERSION, true );
+	
+	// Enqueue AJAX pagination script only on pages that need it
+	if (is_page_template('menu.php') || is_page('menu')) {
+		wp_enqueue_script('js-ajax-pagination', get_template_directory_uri() . '/js/ajax-pagination.js', array('jquery'), _S_VERSION, true);
+	}
+	
+	// Add site info for JavaScript
+	wp_localize_script( 'js-main', 'kurowassan_data', array(
+		'site_url' => site_url(),
+		'ajax_url' => admin_url('admin-ajax.php'),
+		'current_page' => get_query_var('paged') ? get_query_var('paged') : 1,
+		'nonce' => wp_create_nonce('kurowassan_ajax_nonce')
+	));
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
@@ -563,17 +576,34 @@ function custom_product_category_template($template) {
 add_action('wp_ajax_add_to_cart_ajax', 'custom_ajax_add_to_cart');
 add_action('wp_ajax_nopriv_add_to_cart_ajax', 'custom_ajax_add_to_cart');
 function custom_ajax_add_to_cart() {
+    // Check for nonce - but don't return early to support older browsers and cases where nonce might be missing
+    $nonce_valid = isset($_POST['nonce']) && wp_verify_nonce($_POST['nonce'], 'kurowassan_ajax_nonce');
+    
+    // Check for required product_id
+    if (!isset($_POST['product_id']) || empty($_POST['product_id'])) {
+        wp_send_json_error(['message' => 'Missing product ID']);
+        return;
+    }
+    
     $product_id = intval($_POST['product_id']);
     $quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 1;
-
+    
+    // Validate product
+    $product = wc_get_product($product_id);
+    if (!$product) {
+        wp_send_json_error(['message' => 'Invalid product']);
+        return;
+    }
+    
+    // Attempt to add to cart
     if ($product_id && WC()->cart->add_to_cart($product_id, $quantity)) {
         wp_send_json_success([
-            'message' => 'Success!',
+            'message' => 'Product added to cart!',
             'cart_count' => WC()->cart->get_cart_contents_count(),
             'cart_total' => WC()->cart->get_cart_total()
         ]);
     } else {
-        wp_send_json_error(['message' => 'Cant add products to cart!']);
+        wp_send_json_error(['message' => 'Unable to add product to cart. Please try again.']);
     }
 
     wp_die();
@@ -590,7 +620,8 @@ add_action('wp_enqueue_scripts', 'custom_enqueue_ajax_script');
 function custom_enqueue_ajax_script() {
     wp_enqueue_script('custom-ajax', get_template_directory_uri() . '/js/custom-ajax.js', ['jquery'], null, true);
     wp_localize_script('custom-ajax', 'ajax_params', [
-        'ajax_url' => admin_url('admin-ajax.php')
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('kurowassan_ajax_nonce')
     ]);
 }
 
@@ -929,3 +960,147 @@ function get_recipe_thumbnail($post_id = null, $size = 'medium') {
     
     return false;
 }
+
+// Make sure WooCommerce products are properly registered
+function kurowassan_check_products_setup() {
+    if (!post_type_exists('product') && function_exists('WC')) {
+        add_action('admin_notices', 'kurowassan_products_notice');
+    }
+}
+add_action('init', 'kurowassan_check_products_setup', 99);
+
+function kurowassan_products_notice() {
+    ?>
+    <div class="notice notice-error is-dismissible">
+        <p><?php _e('Products are not properly registered. Please make sure WooCommerce is activated.', 'kurowassan'); ?></p>
+    </div>
+    <?php
+}
+
+// Fix pagination for custom templates
+function kurowassan_fix_pagination_base($redirect_url) {
+    if (is_paged()) {
+        global $wp;
+        $current_url = home_url($wp->request);
+        $position = strpos($current_url, '/page/');
+        if ($position !== false) {
+            $base_url = substr($current_url, 0, $position);
+            return $base_url;
+        }
+    }
+    return $redirect_url;
+}
+add_filter('redirect_canonical', 'kurowassan_fix_pagination_base');
+
+// Enable pretty permalinks for pagination on custom templates
+function kurowassan_add_rewrite_rules() {
+    $templates = array(
+        'menu' => 'menu.php',
+    );
+    
+    foreach ($templates as $name => $template) {
+        $page = get_page_by_path($name);
+        if ($page) {
+            add_rewrite_rule(
+                '^' . $name . '/page/([0-9]+)/?$',
+                'index.php?page_id=' . $page->ID . '&paged=$matches[1]',
+                'top'
+            );
+        }
+    }
+}
+add_action('init', 'kurowassan_add_rewrite_rules');
+
+// Add AJAX handler for pagination
+function kurowassan_load_page_content() {
+    check_ajax_referer('kurowassan_ajax_nonce', 'nonce');
+    
+    $page_url = isset($_POST['page_url']) ? esc_url_raw($_POST['page_url']) : '';
+    if (empty($page_url)) {
+        wp_send_json_error(['message' => 'No page URL provided']);
+        return;
+    }
+    
+    // Parse URL to get page number
+    $page_num = 1;
+    if (preg_match('/\/page\/(\d+)/', $page_url, $matches)) {
+        $page_num = intval($matches[1]);
+    } else if (preg_match('/[?&]paged=(\d+)/', $page_url, $matches)) {
+        $page_num = intval($matches[1]);
+    }
+    
+    // Set up query
+    $args = array(
+        'post_type'      => 'product',
+        'posts_per_page' => 20,
+        'paged'          => $page_num
+    );
+    
+    $products_query = new WP_Query($args);
+    
+    // Start output buffering for products HTML
+    ob_start();
+    
+    if ($products_query->have_posts()) {
+        while ($products_query->have_posts()) : $products_query->the_post();
+            $product_id = get_the_ID();
+            $product = wc_get_product($product_id);
+            $image_url = get_the_post_thumbnail_url($product_id, 'full');
+            ?>
+            <div class="product-item">
+                <div class="product-img">
+                    <a href="<?php the_permalink(); ?>">
+                        <img src="<?php echo esc_url($image_url); ?>" alt="<?php the_title(); ?>">
+                    </a>
+                </div>
+                <div class="product-content">
+                    <h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+                    <p class="price"><?php echo $product->get_price(); ?> đ</p>
+                    <button type="button" class="add-to-cart" data-product-id="<?php echo $product_id; ?>">Add to Cart</button>
+                </div>
+            </div>
+            <?php
+        endwhile;
+    } else {
+        echo '<div class="no-products-message">';
+        echo '<p>No products found. Please check back later.</p>';
+        echo '</div>';
+    }
+    
+    // Get the products HTML
+    $products_html = ob_get_clean();
+    
+    // Generate pagination HTML separately
+    $pagination = '';
+    if ($products_query->max_num_pages > 1) {
+        $pagination = paginate_links(array(
+            'base'      => str_replace(999999999, '%#%', esc_url(get_pagenum_link(999999999))),
+            'format'    => '?paged=%#%',
+            'current'   => max(1, $page_num),
+            'total'     => $products_query->max_num_pages,
+            'prev_text' => '&laquo; Previous',
+            'next_text' => 'Next &raquo;',
+            'type'      => 'list',
+            'end_size'  => 3,
+            'mid_size'  => 3
+        ));
+    }
+    
+    wp_reset_postdata();
+    
+    // Send the response
+    if ($products_query->have_posts() || !empty($products_html)) {
+        wp_send_json_success([
+            'products_html' => $products_html,
+            'pagination'    => $pagination,
+            'page'          => $page_num,
+            'max_pages'     => $products_query->max_num_pages
+        ]);
+    } else {
+        wp_send_json_error(['message' => 'No products found']);
+    }
+    
+    wp_die();
+}
+add_action('wp_ajax_kurowassan_load_page_content', 'kurowassan_load_page_content');
+add_action('wp_ajax_nopriv_kurowassan_load_page_content', 'kurowassan_load_page_content');

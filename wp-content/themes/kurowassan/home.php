@@ -52,7 +52,7 @@ get_header();
     
     <!-- About Section -->
     <section class="bg-cockroach">
-        <?php get_template_part('template-parts/template','about'); ?>
+    <?php get_template_part('template-parts/template','about'); ?>
     </section>
     
     <div class="section-divider"></div>
@@ -96,6 +96,71 @@ get_header();
                         <a href="<?php echo get_permalink(get_page_by_path('menu')); ?>" class="btn btn-primary btn-lg px-4 py-2">View Full Menu</a>
                     </div>
                 <?php endif; ?>
+        </div>
+    </section>
+    
+    <div class="section-divider"></div>
+
+    <!-- Featured Products Slider Section -->
+    <section id="featured-products" class="py-5 bg-white">
+        <div class="container">
+            <div class="section-title position-relative text-center mx-auto mb-5 pb-3" style="max-width: 600px;">
+                <h2 class="text-dark font-secondary">Featured Products</h2>
+                <h1 class="display-4 text-uppercase">OUR BEST SELLERS</h1>
+            </div>
+            
+            <div class="owl-carousel owl-theme product-slider">
+                <?php
+                $args = array(
+                    'post_type' => 'product',
+                    'posts_per_page' => 6,
+                    'orderby' => 'date',
+                    'order' => 'DESC'
+                );
+                
+                $featured_products = new WP_Query($args);
+                
+                if ($featured_products->have_posts()) :
+                    while ($featured_products->have_posts()) : $featured_products->the_post();
+                        global $product;
+                        $price = $product->get_price();
+                        $product_id = $product->get_id();
+                        ?>
+                        <div class="item product-slide">
+                            <div class="product-card">
+                                <div class="product-image">
+                                    <a href="<?php the_permalink(); ?>">
+                                        <?php if (has_post_thumbnail()) : ?>
+                                            <?php the_post_thumbnail('medium', array('class' => 'img-fluid')); ?>
+                                        <?php else : ?>
+                                            <img src="https://placehold.co/600x600/f0e68c/333333?text=Product" alt="Product Image" class="img-fluid">
+                                        <?php endif; ?>
+                                    </a>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title">
+                                        <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                                    </h3>
+                                    <div class="product-price"><?php echo $price; ?> đ</div>
+                                    <button type="button" class="add-to-cart-btn" data-product-id="<?php echo $product_id ?>">
+                                        Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    <?php
+                    endwhile;
+                    wp_reset_postdata();
+                else : ?>
+                    <div class="no-products">
+                        <p>No products found. Please add some products to display here.</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+            
+            <div class="custom-nav-dots text-center mt-4">
+                <!-- Custom navigation dots will be placed here via JavaScript -->
+            </div>
         </div>
     </section>
     
